@@ -1,1 +1,1 @@
-DROP TABLE products;
+DELETE FROM "alembic_version";
