@@ -1,1 +1,3 @@
-DELETE FROM "alembic_version";
+UPDATE users SET is_superuser = True
+WHERE id = 1
+
