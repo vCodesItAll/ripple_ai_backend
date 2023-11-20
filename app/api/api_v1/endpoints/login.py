@@ -15,11 +15,12 @@ from app.utils import (
     send_reset_password_email,
     verify_password_reset_token,
 )
+import datetime
 
 router = APIRouter()
 
 
-@router.post("/login/access-token", response_model=schemas.Token)
+@router.post("/login/access-token", response_model=schemas.TokenSchema)
 def login_access_token(
     db: Session = Depends(deps.get_db), form_data: OAuth2PasswordRequestForm = Depends()
 ) -> Any:
@@ -34,11 +35,21 @@ def login_access_token(
     elif not controllers.user.is_active(user):
         raise HTTPException(status_code=400, detail="Inactive user")
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+
+    # check if token exists
+    existing_token: Token = controllers.token.get_token_by_user_id(db, obj_in=user.id)
+
+    if existing_token:
+        if existing_token.expires < datetime.datetime.utcnow():
+            token = controllers.token.refresh(db, obj_in=existing_token)
+
+    if not existing_token: 
+        access_token: str = security.create_access_token(user.id, expires_delta=access_token_expires)
+        token = controllers.token.create(db, obj_in=access_token)
+
     return {
-        "access_token": security.create_access_token(
-            user.id, expires_delta=access_token_expires
-        ),
-        "token_type": "bearer",
+        "access_token": token.access_token,
+        "token_type": "bearer"
     }
 
 
