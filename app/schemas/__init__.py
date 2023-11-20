@@ -1,3 +1,3 @@
 from .msg import Msg
-from .token import Token, TokenPayload
+from .token import TokenSchema, TokenSchemaPayload
 from .user import User, UserCreate, UserInDB, UserUpdate
