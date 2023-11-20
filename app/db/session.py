@@ -2,5 +2,12 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from app.core.config import Settings
 
-engine = create_engine("postgresql://postgres:postgres@localhost:5432/postgres", pool_pre_ping=True)
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+connection_string = f"{os.environ.get('DB_ENGINE')}://{os.environ.get('DB_USER')}:{os.environ.get('DB_PASSWORD')}@{os.environ.get('DB_HOST')}:{os.environ.get('DB_PORT')}/{os.environ.get('DB_NAME')}"
+
+engine = create_engine(connection_string, pool_pre_ping=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
