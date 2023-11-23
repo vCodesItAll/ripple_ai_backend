@@ -1,6 +1,6 @@
-from typing import Any, List
+from typing import Any, List, Annotated
 
-from fastapi import APIRouter, Body, Depends, HTTPException
+from fastapi import APIRouter, Body, Depends, HTTPException, Form
 from fastapi.encoders import jsonable_encoder
 from pydantic.networks import EmailStr
 from sqlalchemy.orm import Session
@@ -9,6 +9,8 @@ from app import controllers, models, schemas
 from app.api import deps
 from app.core.config import settings
 from app.utils import send_new_account_email
+from datetime import timedelta
+from app.core import security
 
 router = APIRouter()
 
@@ -107,7 +109,7 @@ def create_user_open(
             status_code=400,
             detail="The user with this username already exists in the system",
         )
-    user_in = schemas.UserCreate(password=password, email=email, full_name=full_name)
+    user_in = schemas.UserCreate(password=password, email=email, username=username)
     new_user = controllers.user.create(db, obj_in=user_in)
     return new_user
 
@@ -150,3 +152,41 @@ def update_user(
         )
     user = controllers.user.update(db, db_obj=user, obj_in=user_in)
     return user
+
+@router.post("/register")
+def register_user(*, db: Session = Depends(deps.get_db), 
+    username: Annotated[str, Form()], email: Annotated[str, Form()], password: Annotated[str, Form()]
+) -> Any:
+    """
+    Create new user without the need to be logged in.
+    """
+    if not settings.USERS_OPEN_REGISTRATION:
+        raise HTTPException(
+            status_code=403,
+            detail="Open user registration is forbidden on this server",
+        )
+    new_user = controllers.user.get_by_email(db, email=email)
+    if new_user:
+        raise HTTPException(
+            status_code=400,
+            detail="The user with this username already exists in the system",
+        )
+    user_in = schemas.UserCreate(password=password, email=email, username=username)
+    new_user = controllers.user.create(db, obj_in=user_in)
+    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+
+    # check if token exists
+    existing_token: Token = controllers.token.get_token_by_user_id(db, obj_in=new_user.id)
+
+    if existing_token:
+        if existing_token.expires < datetime.datetime.utcnow():
+            token = controllers.token.refresh(db, obj_in=existing_token)
+
+    if not existing_token: 
+        access_token: str = security.create_access_token(new_user.id, expires_delta=access_token_expires)
+        token = controllers.token.create(db, obj_in=access_token)
+
+    return {
+        "access_token": token.access_token,
+        "token_type": "bearer"
+    }
