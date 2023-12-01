@@ -1,6 +1,5 @@
 from datetime import timedelta
 from typing import Any
-
 from fastapi import FastAPI, APIRouter, Body, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
@@ -19,7 +18,7 @@ import sys
 router = APIRouter()
 
 # Getting OpenAI API Key
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "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")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "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")
 if not len(OPENAI_API_KEY):
     print("Please set OPENAI_API_KEY environment variable. Exiting.")
     sys.exit(1)
@@ -29,9 +28,8 @@ openai.api_key = OPENAI_API_KEY
 # Defining error in case of 503 from OpenAI
 error503 = "OpenAI server is busy, try again later"
 
-@router.post("/stream")
 async def stream_prompt(human_input_str: str) -> Any:
-
+    print(human_input_str)
     cloud_config= {
     'secure_connect_bundle': 'app/secure-connect-ripple-ai.zip'
     }
@@ -65,7 +63,6 @@ async def stream_prompt(human_input_str: str) -> Any:
 
     #template given to AI 
     template = """
-
     Setting
     In the mystical land of Eldoria, a realm filled with magic, mythical creatures, and ancient secrets. 
     The protagonist is a young adventurer seeking the legendary Crystal of Eldoria, said to possess immense power.
@@ -141,8 +138,6 @@ def get_response_openai(response: str):
     # print(response)
     current_content = response
     try:
-        # for chunk in response:
-        #     current_content = chunk["choices"][0]["delta"].get("content", "")
         yield current_content
     except Exception as e:
         print("OpenAI Response (Streaming) Error: " + str(e))
