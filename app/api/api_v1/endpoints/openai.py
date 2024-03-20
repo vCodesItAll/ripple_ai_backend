@@ -40,9 +40,6 @@ async def generate_response(human_input_str: str, original_template: str) -> Any
         # makeing templete
         template = f"""
         {original_template}
-        
-        Some rules to follow:
-        1. Always start by asking for a name for the protagonist.
 
         Here is the chat history, use this to understand what to say next: {{chat_history}}
         Human: {{human_input}}
