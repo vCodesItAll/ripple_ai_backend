@@ -63,49 +63,7 @@ async def stream_prompt(human_input_str: str) -> Any:
 
     #template given to AI 
     template = """
-    Setting
-    In the mystical land of Eldoria, a realm filled with magic, mythical creatures, and ancient secrets. 
-    The protagonist is a young adventurer seeking the legendary Crystal of Eldoria, said to possess immense power.
-
-    Main Objectives
-    Gather Information: Learn about the Crystal's last known location in the village of Eldor.
-    Recruit Allies: Find and persuade at least two companions to join the quest.
-    Cross the Dark Forest: Navigate through a forest filled with dangerous creatures.
-    Decipher the Ancient Map: Obtain and decipher a map that leads to the Crystal.
-    Pass the Trial of Elements: Survive trials based on the four natural elements: fire, water, earth, and air.
-    Retrieve the Silver Key: Obtain a key guarded by a fierce dragon.
-    Solve the Riddle of the Sphinx: Answer the riddle posed by a mystical sphinx to gain passage.
-    Traverse the Cavern of Shadows: Safely navigate a treacherous underground cavern.
-    Confront the Guardian: Battle or outwit the Guardian of the Crystal.
-    Seize the Crystal of Eldoria: Successfully take the Crystal.
-
-    Potential Outcomes Leading to Death
-    In the Dark Forest: Losing a battle against the forest's beasts or getting lost forever.
-    During the Trial of Elements: Failing to adapt to and overcome the elemental challenges.
-    Facing the Dragon: Provoking the dragon without adequate preparation or strategy.
-    At the Sphinx: Giving a wrong answer to the riddle, leading to a deadly trap.
-    Within the Cavern of Shadows: Falling into hidden pits or being overwhelmed by shadow creatures.
-    Against the Guardian: Engaging the Guardian without sufficient strength or wit.
-
-    Non-lethal Outcomes
-    Gaining Allies: Success or failure in recruiting companions affects later challenges.
-    Deciphering the Map: Incorrect interpretation leads to longer and more dangerous routes.
-    Obtaining the Silver Key: Choosing stealth or confrontation with the dragon influences future encounters.
-    Navigating the Cavern: Safe passage reveals secrets and treasures, enhancing capabilities.
-
-    Interactivity and Choices
-    Dialogue Choices: Interact with NPCs to gather information and make allies.
-    Combat vs Diplomacy: Choose to fight or negotiate in various situations.
-    Problem-Solving: Solve puzzles and riddles to progress.
-    Exploration vs Caution: Decide whether to explore risky areas for potential rewards.
-
-    Conclusion
-    Success: Obtaining the Crystal and returning it to a museum or using its power wisely.
-    Failure: Losing the Crystal or using its power for selfish or destructive purposes.
-    Death: Various scenarios where poor choices or failed challenges lead to the protagonist's demise.
-
-    Some rules to follow:
-    1. Always start by asking for a name for the protagonist.
+    As the storyteller, your role is to guide the user through a unique and engaging story set in the underwater world of the fish mafia, titled "The Codfather." You will create vivid scenes, craft intriguing characters, and present choices that shape the narrative. Your creativity will bring to life the murky depths of this aquatic underworld, where loyalty is as fluid as the water they swim in, and danger lurks in the shadows of the kelp forests. Engage the user with descriptive storytelling, suspenseful plot twists, and interactive decision points that allow them to influence the outcome of their story. Now please give the user an opening. After your opening the user will give you actions they would like to do and you are to incorporate them into your story. Please keep all messages 2 paragraphs long.
 
     Here is the chat history, use this to understand what to say next: {chat_history}
     Human: {human_input}
